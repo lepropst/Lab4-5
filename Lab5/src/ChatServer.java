@@ -1,0 +1,72 @@
+import java.io.*;
+import java.net.*;
+
+public class ChatServer {
+	public final static int PORT = 5582;
+	static RandomAccessFile history;
+	public static void main (String[] args) throws IOException {
+		boolean listen = true;
+		ServerSocket serverSocket = null;
+		RandomAccessFile history = null;
+		try {
+			serverSocket = new ServerSocket(PORT);
+		} catch (IOException e) {
+			System.out.println(PORT + " Could not be heard");
+			System.exit(1);
+		}
+		while (listen) {
+			Socket clientSocket = null;
+			try {
+				clientSocket = serverSocket.accept();
+				System.out.println("Accepted connection");
+			} catch (IOException e) {
+				System.out.println("Failed to connect to port " + PORT);
+				continue;
+			}
+			
+			new ChatServerThread(clientSocket, history).start();
+			System.out.println("Thread Started");
+		}
+		try {
+			serverSocket.accept();
+			System.out.println("Socket closed");
+		} catch(IOException e) {
+			System.out.println("IO on closing RAF");
+		}
+	}
+}
+	class ChatServerThread extends Thread {
+		Socket socket = null;
+		RandomAccessFile history;
+		
+		ChatServerThread(Socket socket, RandomAccessFile history) {
+			this.socket = socket;
+			this.history = history;
+		}
+		public String write() throws IOException {
+			DataInputStream streamIn;
+			streamIn = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+			System.out.println(streamIn);
+			return "hewn";
+		}
+		public void run() {
+			try { 
+				BufferedReader is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				PrintWriter os = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()));
+				String inputLine, outputLine;
+				while((inputLine = is.readLine()) != null) {
+					outputLine = inputLine;
+					os.println(outputLine);
+					os.flush();
+					if(outputLine.equals("quit"))
+						break;
+				}
+				os.close();
+				is.close();
+				socket.close();
+			} catch(IOException e) {
+				System.out.println("I/O Error" + e);
+			}
+		}
+		}
+	

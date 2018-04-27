@@ -1,0 +1,80 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.net.Socket;
+
+final class a
+extends Thread {
+    private Socket a;
+    private BufferedReader b;
+    private PrintWriter c;
+    private int d;
+    private String e;
+    private /* synthetic */ ChatServer f;
+
+    a(ChatServer chatServer, Socket socket) {
+        this.f = chatServer;
+        int n = ChatServer.a() + 1;
+        ChatServer.a(n);
+        this.d = n;
+        this.a = socket;
+        try {
+            this.c = new PrintWriter(socket.getOutputStream(), true);
+            this.b = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            return;
+        }
+        catch (IOException iOException) {
+            ChatServer.a(chatServer, "Exception creating new Input/output Streams: " + iOException);
+            return;
+        }
+    }
+
+    @Override
+    public final void run() {
+        do {
+            try {
+                this.e = this.b.readLine();
+            }
+            catch (IOException iOException) {
+                ChatServer.a(this.f, " Exception reading Streams: " + iOException);
+                break;
+            }
+            if (this.e == null) break;
+            ChatServer.b(this.f, "Client " + this.d + ": " + this.e);
+        } while (true);
+        this.f.remove(this.d);
+        this.a();
+    }
+
+    private void a() {
+        try {
+            if (this.c != null) {
+                this.c.close();
+            }
+            if (this.b != null) {
+                this.b.close();
+            }
+            if (this.a != null) {
+                this.a.close();
+                return;
+            }
+        }
+        catch (Exception exception) {}
+    }
+
+    private boolean a(String string) {
+        if (!this.a.isConnected()) {
+            this.a();
+            return false;
+        }
+        this.c.println(string);
+        return true;
+    }
+
+    static /* synthetic */ boolean a(a a2, String string) {
+        return a2.a(string);
+    }

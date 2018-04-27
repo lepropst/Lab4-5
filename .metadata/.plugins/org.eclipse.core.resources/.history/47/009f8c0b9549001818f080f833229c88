@@ -1,0 +1,79 @@
+import java.io.*;
+import java.net.*;
+
+public class ChatServer {
+	public final static int PORT = 5555;
+	static RandomAccessFile history;
+	public static void main (String[] args) throws IOException {
+		boolean listen = true;
+		ServerSocket serverSocket = null;
+		RandomAccessFile history = null;
+		try {
+			serverSocket = new ServerSocket(PORT);
+		} catch (IOException e) {
+			System.out.println(PORT + " Could not be heard");
+			System.exit(1);
+		}
+		while (listen) {
+			Socket clientSocket = null;
+			try {
+				clientSocket = serverSocket.accept();
+				System.out.println("Accepted connection");
+			} catch (IOException e) {
+				System.out.println("Failed to connect to port " + PORT);
+				continue;
+			}
+			DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
+	        DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
+			new ChatServerThread(clientSocket, history).start();
+			System.out.println("Thread Started");
+		}
+		try {
+			serverSocket.accept();
+			System.out.println("Socket closed");
+		} catch(IOException e) {
+			System.out.println("IO on closing RAF");
+		}
+	}
+}
+	class ChatServerThread extends Thread {
+		Socket socket = null;
+		RandomAccessFile history;
+		
+		ChatServerThread(Socket socket, RandomAccessFile history) {
+			this.socket = socket;
+			this.history = history;
+		}
+		public String write() throws IOException {
+			DataInputStream streamIn;
+			streamIn = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+			System.out.println(streamIn);
+			return "hewn";
+		}
+		public void communication(Socket socket) {
+			
+		try (
+			    // ...
+			    PrintWriter out =
+			        new PrintWriter(socket.getOutputStream(), true);
+			    BufferedReader in = new BufferedReader(
+			        new InputStreamReader(socket.getInputStream()));
+			) {
+			    String inputLine, outputLine;
+			    while((inputLine = in.readLine()) != null) {
+			    	System.out.println(inputLine);
+			    }
+		}
+//			            
+//			    // Initiate conversation with client
+//			    KnockKnockProtocol kkp = new KnockKnockProtocol();
+//			    outputLine = kkp.processInput(null);
+//			    out.println(outputLine);
+//
+//			    while ((inputLine = in.readLine()) != null) {
+//			        outputLine = kkp.processInput(inputLine);
+//			        out.println(outputLine);
+//			        if (outputLine.equals("Bye."))
+//			            break;
+//			    }
+	}

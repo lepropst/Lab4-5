@@ -1,0 +1,43 @@
+import java.io.*;
+import java.net.*;
+
+public class ChatServer {
+	public final static int PORT = 5045;
+
+	public static void main (String[] args) throws FileNotFoundException {
+		boolean listen = true;
+		ServerSocket serverSocket = null;
+		RandomAccessFile history;
+		history = new RandomAccessFile("history.txt", "rw");
+
+		try {
+			serverSocket = new ServerSocket(PORT);
+		} catch (IOException e) {
+			System.out.println(PORT + " Could not be heard");
+			System.exit(1);
+		}
+		while (listen) {
+			Socket clientSocket = null;
+			try {
+				clientSocket = serverSocket.accept();
+			} catch (IOException e) {
+				System.out.println("Failed to connect to port " + PORT);
+				continue;
+			}
+			new ChatServerThread(clientSocket, history).start();
+		}
+		try {
+			history.close();
+		} catch(IOException e) {
+			System.out.println("IO on closing RAF");
+		}
+	}
+	class ChatServerThread extends Thread {
+
+		public ChatServerThread(Socket clientSocket) {
+			// TODO Auto-generated constructor stub
+		}
+
+	}
+	
+}

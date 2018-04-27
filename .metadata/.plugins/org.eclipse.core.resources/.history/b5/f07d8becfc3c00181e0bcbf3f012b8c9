@@ -1,0 +1,162 @@
+import javax.swing.*;
+import java.awt.event.*;
+import java.io.*;
+import java.util.ArrayList;
+public class Lab3 extends JFrame implements ActionListener {
+	static final long serialVersionUID = 1;
+	JLabel scramletLabel = new JLabel("Scramlet");
+	JTextField scramletText = new JTextField(10);
+	JButton unscrmbleButton = new JButton("Unscramble");
+	JTextArea result = new JTextArea(20,40);
+	JScrollPane scroller = new JScrollPane();
+	RandomAccessFile indexFile = null;
+	RandomAccessFile wordsFile = null;
+	public Lab3() {
+		setTitle("Scramlet Solver");
+		setLayout(new java.awt.FlowLayout());
+		setSize(500,430);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		add(scramletLabel);
+		add(scramletText);
+		add(unscrmbleButton); unscrmbleButton.addActionListener(this);
+		scroller.getViewport().add(result);
+		add(scroller);
+	}
+	public static void main(String[] args) {
+		Lab3 display = new Lab3();
+		display.setVisible(true);
+	}
+	void getFiles() {
+		String indexName = getFileName("Index File");
+		if (indexName == null) {
+			result.setText("No index file chosen");
+			return;
+		}
+		String wordsName = getFileName("Words File");
+		if (wordsName == null) {
+			result.setText("No words file chosen");
+			return;
+		}
+		try {
+			indexFile = new RandomAccessFile(indexName, "r");
+		} catch (FileNotFoundException e) {
+			result.setText("Index file not found");
+			return;
+		}
+		try {
+			wordsFile = new RandomAccessFile(wordsName, "r");
+		} catch (FileNotFoundException e) {
+			result.setText("Words file not found");
+			return;
+		}
+	}
+	String getFileName(String title) {
+		JFileChooser fc = new JFileChooser();
+		fc.setDialogTitle(title);
+		int returnVal = fc.showOpenDialog(this);
+		if (returnVal == JFileChooser.APPROVE_OPTION)
+			return fc.getSelectedFile().getPath();
+		else
+			return null;
+	}
+	public void actionPerformed(ActionEvent evt) {
+		result.setText(""); //clear TextArea
+		if (indexFile == null || wordsFile == null)
+			getFiles();
+		try {
+			unscramble();
+		} catch (IOException e) {
+			result.setText("I/O eror occurred");
+		}
+	}
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	void unscramble () throws IOException {
+		String scramlet = scramletText.getText();
+		scramlet = scramlet.trim().toLowerCase();
+		System.out.println("Scramlet = " + scramlet);
+		//double checks that the entire string is a character/letter
+		for(int i=0; i<scramlet.length(); i++) {
+			if(!(Character.isLetter(scramlet.charAt(i)))) {
+				result.setText("The entered value is not alphabetical, please enter a string of letters.");
+			}
+		}
+		//sees if the string will be short enough to compute efficiently 
+		if((int)(scramlet.length())>10) {
+			result.setText("A stsring this long will run too long, please enter a shorter scramlet");
+		}
+		//creates an array of string permutations to then pass into binary search.
+		String[] permutations = perm(scramlet);
+		
+		
+		int wordsN = (int)(indexFile.length() /4L-1L);
+		for(int i =0; i<permutations.length; i++) {
+			if((binarySearch(permutations[i], 0, wordsN -1 ) >= 0) &&
+					(!result.getText().contains(permutations[i] + "/n"))) {
+				result.append(permutations[i] + "/n");
+			}
+			if (result.getText().contains(permutations[i] + "/n")) {
+				result.setText("None found");
+			}
+		}
+	}
+	//    int numWords = (int)(indexFile.length() / 4L - 1L);
+	//    for (int i = 0; i < perms.length; i++) {
+	//      if ((binarySearch(perms[i], 0, numWords - 1) >= 0) && 
+	//        (!result.getText().contains(perms[i] + "\n")))
+	//        result.append(perms[i] + "\n");
+	//    }
+	//    if (result.getText().length() == 0) {
+	//      result.setText("None found\n");
+	//    }
+	//  }
+	/*
+	 *Creates the permutations of the string passed into the method 
+	 */
+	String[] perm(String s) {
+		if (s.length() == 0) return null;
+		String result[] = new String[fact(s.length())];
+		if (s.length() == 1)
+			result[0] = s;
+		else {
+			int j = 0;
+			for(int i=0; i<s.length(); i++) {
+				char c = s.charAt(i);
+				String temp = s.substring(0,i) + s.substring(i+1);
+				String[] tempPerm = perm(temp);
+				for(int k=0; k<tempPerm.length; k++) {
+					result[j] = c + tempPerm[k];
+					j++;
+				}
+			}
+		}
+		return result;
+	}
+	//Factorial method
+	int fact(int i) {
+		if(i==0)return 1;
+		else return i * fact(i-1);
+	}
+	/*
+	 * Binary method
+	 * Will take a string and search the index file by halving it. Checks if the string is equal 
+	 * to the string found from the words file.
+	 * if it is not then use compareTo to find the direction of search and rerun binary search after adjusting
+	 * high and low values.
+	 */
+	private int binarySearch(String string, int lower, int upper) {
+		if (lower > upper)
+			return -1;
+		int mid = (lower + upper) / 2;
+//		if (items[mid] = value)
+//			return mid;
+//		else if (items[mid] < value)
+//			return binarySearch(value,lower, mid-1);
+//		else
+//			return binarySearch(value, mid+1, upper);
+//	}
+		return 1;
+
+}
+
+
+}

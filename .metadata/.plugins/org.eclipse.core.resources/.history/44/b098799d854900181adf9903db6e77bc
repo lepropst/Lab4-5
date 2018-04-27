@@ -1,0 +1,58 @@
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import javax.swing.*;
+
+public class ChatServer
+extends JFrame
+{
+private static int a;
+private Vector b = new Vector();
+private int c = 5555;
+
+private ChatServer(int paramInt)
+{
+  setSize(500, 450);
+  setTitle("Dummy Chat Server Window");
+  setDefaultCloseOperation(2);
+}
+
+private synchronized void a(String paramString)
+{
+  System.out.println(paramString);
+  int i = b.size();
+  do
+  {
+    Object localObject;
+    if (!a.a(localObject = (a)b.get(i), paramString))
+    {
+      b.remove(i);
+      localObject = "Disconnected Client  removed from list.";
+      System.out.println((String)localObject);
+    }
+    i--;
+  } while (i >= 0);
+}
+
+public static void main(String[] paramArrayOfString)
+{
+  paramArrayOfString = paramArrayOfString = new ChatServer(5555);
+  try
+  {
+    ServerSocket localServerSocket = new ServerSocket(c);
+    for (;;)
+    {
+      localObject = localServerSocket.accept();
+      localObject = new a(paramArrayOfString, (Socket)localObject);
+      b.add(localObject);
+      ((a)localObject).start();
+    }
+  }
+  catch (IOException localIOException)
+  {
+    Object localObject;
+    paramArrayOfString = localObject = " Exception on new ServerSocket: " + localIOException + "\n";
+    System.out.println(paramArrayOfString);
+  }
+}
+}
