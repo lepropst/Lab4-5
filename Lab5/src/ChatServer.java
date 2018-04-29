@@ -1,13 +1,15 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class ChatServer {
-	public final static int PORT = 5582;
+	public final static int PORT = 5562;
 	static RandomAccessFile history;
 	public static void main (String[] args) throws IOException {
+		ArrayList<Object> clients = new ArrayList<Object>();
 		boolean listen = true;
 		ServerSocket serverSocket = null;
-		RandomAccessFile history = null;
+		String history = null;
 		try {
 			serverSocket = new ServerSocket(PORT);
 		} catch (IOException e) {
@@ -24,8 +26,12 @@ public class ChatServer {
 				continue;
 			}
 			
-			new ChatServerThread(clientSocket, history).start();
+			ChatServerThread e;
+			e = new ChatServerThread(clientSocket, history, clients);
+			e.start();
+			clients.add(e);
 			System.out.println("Thread Started");
+			System.out.println(e);
 		}
 		try {
 			serverSocket.accept();
@@ -36,31 +42,39 @@ public class ChatServer {
 	}
 }
 	class ChatServerThread extends Thread {
+		String inputLine, outputLine;
 		Socket socket = null;
-		RandomAccessFile history;
+		ArrayList clients;
+		private String history;
 		
-		ChatServerThread(Socket socket, RandomAccessFile history) {
+		
+		ChatServerThread(Socket socket, String history, ArrayList clients) {
 			this.socket = socket;
 			this.history = history;
+			this.clients = clients;
 		}
-		public String write() throws IOException {
-			DataInputStream streamIn;
-			streamIn = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-			System.out.println(streamIn);
-			return "hewn";
+
+		public String write() {
+			outputLine = inputLine;
+			outputLine = inputLine;
+			return history = history + "\n" + outputLine;
 		}
+	
 		public void run() {
+			
 			try { 
 				BufferedReader is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				PrintWriter os = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()));
-				String inputLine, outputLine;
+				
 				while((inputLine = is.readLine()) != null) {
-					outputLine = inputLine;
-					os.println(outputLine);
+					
+					for (int i=0; i<clients.size()-1; i++) {
+						clients.get(i);
+						os.println(history);
 					os.flush();
-					if(outputLine.equals("quit"))
-						break;
+					
 				}
+			}
 				os.close();
 				is.close();
 				socket.close();
