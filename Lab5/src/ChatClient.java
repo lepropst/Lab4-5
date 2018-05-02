@@ -2,84 +2,7 @@ import java.net.*;
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.JApplet;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import java.awt.FlowLayout;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 
-
-class ChatUI extends JApplet {
-	public JTextField message;
-	public JTextField server;
-	public JTextField port;
-	JPanel chatstuff = new JPanel();
-	JPanel controls = new JPanel();
-	JButton send = new JButton("Send");
-	JPanel conectionstuff = new JPanel();
-	JLabel lblServer = new JLabel("Server IP:");
-	JLabel lblPort = new JLabel("Port:");
-	JButton btnConnect = new JButton("Connect");
-	JPanel chatlog = new JPanel();
-	JTextArea log = new JTextArea();
-	JPanel main = new JPanel();
-	
-	public void init() {
-		main.setLayout(new BorderLayout(0, 0));
-		
-		
-		main.add(controls, BorderLayout.SOUTH);
-		controls.setLayout(new GridLayout(2, 1, 0, 0));
-		
-		
-		controls.add(chatstuff);
-		chatstuff.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
-		message = new JTextField();
-		chatstuff.add(message);
-		message.setColumns(35);
-		
-		
-		chatstuff.add(send);
-		
-		
-		controls.add(conectionstuff);
-		conectionstuff.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
-		
-		conectionstuff.add(lblServer);
-		
-		server = new JTextField();
-		conectionstuff.add(server);
-		server.setColumns(15);
-		
-		
-		conectionstuff.add(lblPort);
-		
-		port = new JTextField();
-		conectionstuff.add(port);
-		port.setColumns(10);
-		
-		
-		conectionstuff.add(btnConnect);
-		
-		
-		main.add(chatlog, BorderLayout.CENTER);
-		
-		
-		log.setRows(12);
-		log.setColumns(35);
-		chatlog.add(log);
-		add(main);
-
-	}
-	
-
-}
 
 public class ChatClient extends ChatUI implements ActionListener {
 	private Socket socket = null;
@@ -130,6 +53,12 @@ public class ChatClient extends ChatUI implements ActionListener {
 	}
 	public void init() {
 		super.init();
+		addListeners();
+	}
+	
+	public void addListeners() {
+		send.addActionListener(this);
+		btnConnect.addActionListener(this);
 	}
 	//public static void main(String args[]) {
 	//	ChatClient client = null;
@@ -142,8 +71,8 @@ public class ChatClient extends ChatUI implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnConnect) {
-			ChatClient chat = new ChatClient(server.getText(), Integer.parseInt(port.getText()));
-			chat.start();
+		//	ChatClient chat = new ChatClient(server.getText(), Integer.parseInt(port.getText()));
+			//chat.start();
 		}else if(e.getSource() == send) {
 			//writeToServer();
 		}
