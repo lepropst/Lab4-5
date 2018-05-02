@@ -12,11 +12,81 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
-public class ChatClient implements ActionListener {
+
+class ChatUI extends JApplet {
+	public JTextField message;
+	public JTextField server;
+	public JTextField port;
+	JPanel chatstuff = new JPanel();
+	JPanel controls = new JPanel();
+	JButton send = new JButton("Send");
+	JPanel conectionstuff = new JPanel();
+	JLabel lblServer = new JLabel("Server IP:");
+	JLabel lblPort = new JLabel("Port:");
+	JButton btnConnect = new JButton("Connect");
+	JPanel chatlog = new JPanel();
+	JTextArea log = new JTextArea();
+	JPanel main = new JPanel();
+	
+	public void init() {
+		main.setLayout(new BorderLayout(0, 0));
+		
+		
+		main.add(controls, BorderLayout.SOUTH);
+		controls.setLayout(new GridLayout(2, 1, 0, 0));
+		
+		
+		controls.add(chatstuff);
+		chatstuff.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		message = new JTextField();
+		chatstuff.add(message);
+		message.setColumns(35);
+		
+		
+		chatstuff.add(send);
+		
+		
+		controls.add(conectionstuff);
+		conectionstuff.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		
+		conectionstuff.add(lblServer);
+		
+		server = new JTextField();
+		conectionstuff.add(server);
+		server.setColumns(15);
+		
+		
+		conectionstuff.add(lblPort);
+		
+		port = new JTextField();
+		conectionstuff.add(port);
+		port.setColumns(10);
+		
+		
+		conectionstuff.add(btnConnect);
+		
+		
+		main.add(chatlog, BorderLayout.CENTER);
+		
+		
+		log.setRows(12);
+		log.setColumns(35);
+		chatlog.add(log);
+		add(main);
+
+	}
+	
+
+}
+
+public class ChatClient extends ChatUI implements ActionListener {
 	private Socket socket = null;
 	private DataInputStream  console = null;
 	private DataOutputStream streamOut = null;
 
+	@SuppressWarnings("deprecation")
 	public ChatClient(String serverName, int serverPort){
 		System.out.println("Establishing connection. Please wait ...");
 		try{
@@ -39,9 +109,14 @@ public class ChatClient implements ActionListener {
 			}
 	}
 	}
-	public void start() throws IOException {
+	public void start() {
 	console   = new DataInputStream(System.in);
-	streamOut = new DataOutputStream(socket.getOutputStream());
+	try {
+		streamOut = new DataOutputStream(socket.getOutputStream());
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	}
 	public void stop() {
 		try {
@@ -53,75 +128,26 @@ public class ChatClient implements ActionListener {
 			System.out.println("Error closing ...");
 		}
 	}
-	public static void main(String args[]) {
-		ChatClient client = null;
-		if (args.length != 2)
-			System.out.println("Usage: java ChatClient host port");
-		else
-			client = new ChatClient(args[0], Integer.parseInt(args[1]));
+	public void init() {
+		super.init();
 	}
+	//public static void main(String args[]) {
+	//	ChatClient client = null;
+	//	if (args.length != 2)
+	//		System.out.println("Usage: java ChatClient host port");
+	//	else
+	//		client = new ChatClient(args[0], Integer.parseInt(args[1]));
+	//}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		if (e.getSource() == btnConnect) {
+			ChatClient chat = new ChatClient(server.getText(), Integer.parseInt(port.getText()));
+			chat.start();
+		}else if(e.getSource() == send) {
+			//writeToServer();
+		}
 		
 	}
 	
-}
-
-
-class ChatUI extends JApplet {
-	private JTextField message;
-	private JTextField server;
-	private JTextField port;
-
-	public ChatUI() {
-		getContentPane().setLayout(new BorderLayout(0, 0));
-		
-		JPanel controls = new JPanel();
-		getContentPane().add(controls, BorderLayout.SOUTH);
-		controls.setLayout(new GridLayout(2, 1, 0, 0));
-		
-		JPanel chatstuff = new JPanel();
-		controls.add(chatstuff);
-		chatstuff.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
-		message = new JTextField();
-		chatstuff.add(message);
-		message.setColumns(35);
-		
-		JButton send = new JButton("Send");
-		chatstuff.add(send);
-		
-		JPanel conectionstuff = new JPanel();
-		controls.add(conectionstuff);
-		conectionstuff.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
-		JLabel lblServer = new JLabel("Server IP:");
-		conectionstuff.add(lblServer);
-		
-		server = new JTextField();
-		conectionstuff.add(server);
-		server.setColumns(15);
-		
-		JLabel lblPort = new JLabel("Port:");
-		conectionstuff.add(lblPort);
-		
-		port = new JTextField();
-		conectionstuff.add(port);
-		port.setColumns(10);
-		
-		JButton btnConnect = new JButton("Connect");
-		conectionstuff.add(btnConnect);
-		
-		JPanel chatlog = new JPanel();
-		getContentPane().add(chatlog, BorderLayout.CENTER);
-		
-		JTextArea log = new JTextArea();
-		log.setRows(12);
-		log.setColumns(35);
-		chatlog.add(log);
-
-	}
-
 }
