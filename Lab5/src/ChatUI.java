@@ -57,6 +57,18 @@ public class ChatUI extends JApplet {
 			
 			
 		}
+		JFrame popup = new JFrame();
+		public void createPopup() {
+			JLabel prompt = new JLabel("Enter a username in the message field");
+			JButton ok = new JButton("Ok");
+			JPanel temp = new JPanel();
+			popup.setSize(500,200);
+			popup.setLayout(new GridLayout(2, 1));
+			popup.add(prompt);
+			temp.add(ok);
+			popup.add(temp);
+			popup.setVisible(true);
+			}
 		
 		
 	
