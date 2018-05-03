@@ -12,7 +12,7 @@ import javax.swing.JTextField;
 class ChatUI extends JApplet {
 		JTextField message = new JTextField();
 		JTextField server = new JTextField();
-		JTextField port = new JTextField();
+		JTextField port = new JTextField("5555");
 		JPanel chatstuff = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		JPanel controls = new JPanel(new GridLayout(2, 1));
 		JButton send = new JButton("Send");
