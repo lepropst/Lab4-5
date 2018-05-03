@@ -10,7 +10,7 @@ public class ChatClient extends ChatUI implements ActionListener {
 	private DataOutputStream streamOut = null;
 
 	
-	public void chat(String serverName, int serverPort){
+	public void chat(String serverName, int serverPort) throws IOException{
 		System.out.println("Establishing connection. Please wait ...");
 		try{
 			socket = new Socket(serverName, serverPort);
@@ -25,7 +25,7 @@ public class ChatClient extends ChatUI implements ActionListener {
 		BufferedReader line = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		while (!line.readLine().equals(".bye")) {
 			try {
-		send.print(line.read());
+				log.append(line.readLine());
 			} catch(IOException ioe) {
 				System.out.println("Sending error: " + ioe.getMessage());
 			}
@@ -53,7 +53,7 @@ public class ChatClient extends ChatUI implements ActionListener {
 	public void init() {
 		super.init();
 		addListeners();
-		chat(server.getText(), Integer.parseInt(port.getText()));
+		//chat(server.getText(), Integer.parseInt(port.getText()));
 	}
 	
 	public void addListeners() {

@@ -1,15 +1,16 @@
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-
 import javax.swing.JApplet;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-class ChatUI extends JApplet {
+public class ChatUI extends JApplet {
 		JTextField message = new JTextField();
 		JTextField server = new JTextField();
 		JTextField port = new JTextField("5555");
@@ -57,9 +58,6 @@ class ChatUI extends JApplet {
 			
 		}
 		
-		public void createDmFrame() {
-			
-		}
 		
 	
 	
