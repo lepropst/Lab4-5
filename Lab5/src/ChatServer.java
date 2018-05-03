@@ -9,11 +9,12 @@ import java.util.Vector;
  * 			service. 
  * Essential techniques: Use of a collection of classes to define threads of a chat server. 
  * 
+ * Use "@" at the beginning of a message to direct message someone. use the command "ls" to list the users on all text areas.
  */
 
 public class ChatServer {
 	//Declare the port on which I am running the server
-	public final static int PORT = 5528;
+	public final static int PORT = 5535;
 	public static void main (String[] args) throws IOException {
 		//Declare a Vector to store the instances of the ChatServerThread class, a boolean to listen, and a ServerSocket.
 		Vector<ChatServerThread> b = new Vector<ChatServerThread>();
@@ -115,6 +116,13 @@ class ChatServerThread extends Thread {
 						}
 					}
 					//Otherwise if there is no Direct Message indicator in the Input then print to everyone the input message.
+				//} 
+//				else if(inputLine.charAt(0) == 'l' && inputLine.charAt(1) == 's'){
+//					for(int i=0; i<clients.size(); i++) {
+//						for(int j=0; j<clients.size(); j++) {
+//							clients.get(i).pw.println(clients.get(j).getUsername());
+//						}
+//					}
 				} else {
 					for(int i=0; i<clients.size(); i++) {
 						//print to everyone the message recieved from a String.
